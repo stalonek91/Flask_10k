@@ -104,9 +104,13 @@ table,
 .hour-square {
   width: 10px;
   height: 10px;
-  background-color: #eee; /* Unfilled color */
+  background-color: #90ee90; /* Unfilled color */
 }
 
 .hour-square-filled {
-  background-color: #90ee90; /* Filled color - light green */
+  background-color: #eee; /* Filled color - light green */
+}
+
+.hour-square-half-filled {
+  background: linear-gradient(to right, #90ee90 50%, #eee 50%);
 }

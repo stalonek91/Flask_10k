@@ -58,7 +58,9 @@
         for (let i = 0; i < totalSquares; i++) {
           const square = document.createElement("div");
           square.className = "hour-square";
-          if (i >= filledUntil) {
+          if (i >= filledUntil && i < filledUntil + 0.5) {
+            square.classList.add("hour-square-half-filled");
+          } else if (i >= filledUntil + 0.5) {
             square.classList.add("hour-square-filled");
           }
           container.appendChild(square);
