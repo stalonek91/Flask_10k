@@ -1,0 +1,112 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  overflow: hidden;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+  margin-top: 20px;
+}
+
+form {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+input[type="number"],
+input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+input[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #333;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background: #555;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #333;
+  color: #fff;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: flex-start; /* Align children to the start of the container */
+  width: 90%;
+  margin: auto;
+}
+
+.content,
+table,
+#hour-container {
+  width: 100%; /* Make sure the width spans the full container */
+}
+
+#hour-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 10px);
+  grid-auto-rows: 10px;
+  gap: 1px;
+  overflow-y: auto;
+  background-color: #f8f8f8;
+  /* Removed float:right; no longer needed with flexbox */
+  height: auto; /* Adjust height or set a specific value if needed */
+  /* Add margin-top if you want space between the table and the squares */
+}
+
+.hour-square {
+  width: 10px;
+  height: 10px;
+  background-color: #eee; /* Unfilled color */
+}
+
+.hour-square-filled {
+  background-color: #90ee90; /* Filled color - light green */
+}

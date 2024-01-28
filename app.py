@@ -45,6 +45,8 @@ def add_Lesson(time, content):
         new_Lesson = Lesson(time=time, content=content)
         db.session.add(new_Lesson)
         db.session.commit()
+        print(f'Time: {time} topic: {content}')
+
 
 
 
@@ -64,6 +66,7 @@ def add_lesson():
             time = float(request.form.get('time', 0))
             content = request.form.get('content')
             new_lesson = add_Lesson(time=time, content=content)
+        
         except ValueError:
             print(f'ERROR!!!!')
             
