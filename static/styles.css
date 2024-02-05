@@ -13,10 +13,23 @@ body {
   overflow: hidden;
 }
 
-h1 {
+h1,
+h2 {
   color: #333;
   text-align: center;
   margin-top: 20px;
+  margin-bottom: 0.5em; /* Add bottom margin for spacing */
+}
+
+h1 {
+  margin-bottom: 10px; /* Slightly larger bottom margin for h1 */
+  font-size: 2em; /* Larger font size for h1 */
+}
+
+h2 {
+  font-size: 1.5em; /* Slightly smaller font size for h2 compared to h1 */
+  font-weight: normal; /* Less emphasis than h1 */
+  color: #555; /* Optional: a slightly different color for h2 if desired */
 }
 
 form {
@@ -113,4 +126,67 @@ table,
 
 .hour-square-half-filled {
   background: linear-gradient(to right, #90ee90 50%, #eee 50%);
+}
+
+.delete-btn {
+  padding: 0; /* No padding needed as we'll align icon and text manually */
+  background-color: transparent; /* Transparent background */
+  color: #333; /* Match the text color to your design */
+  border: none; /* No border for a text-like button */
+  cursor: pointer;
+  font-weight: normal; /* Normal font weight for the text */
+  font-size: 0.8rem; /* Smaller font size for the text */
+  display: flex; /* Use flexbox to layout icon and text */
+  flex-direction: column; /* Stack icon and text vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  width: auto; /* Width to fit content */
+  height: auto; /* Height to fit content */
+  transition: color 0.3s; /* Transition for color change on hover */
+}
+
+.delete-btn:hover {
+  color: #ff4d4d; /* Change text color on hover */
+}
+
+.delete-btn:before {
+  content: "\1F5D1"; /* Trash can icon in Unicode */
+  font-family: Arial, sans-serif; /* Specify the font family if using text as an icon */
+}
+
+.delete-icon {
+  font-size: 1.5rem; /* Larger font size for the icon */
+  margin-bottom: 4px; /* Space between icon and text */
+}
+
+th,
+td {
+  padding: 2px 5px; /* Even smaller padding */
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 12px; /* Smaller font size */
+  line-height: 1.1; /* Tighter line height */
+}
+
+/* Style for the table cell that contains the delete button */
+td.delete-cell {
+  background-color: #f4f4f4; /* This should match the site's background color */
+  text-align: center;
+  vertical-align: middle;
+  border: none; /* Optionally remove the border if it suits the design */
+}
+
+/* Adjust the form style if needed */
+td.delete-cell form {
+  background-color: #f4f4f4; /* This should match the site's background color */
+  display: inline-block; /* Align the form with the delete button */
+  margin: 0; /* Remove any default margin */
+  padding: 0; /* Remove any default padding */
+  border: none; /* Remove any border */
+}
+
+/* Ensuring the table row height fits the content */
+tr {
+  height: auto; /* Auto height for each table row */
+  border-bottom: 1px solid #ddd; /* This will add a line below each row */
 }

@@ -12,6 +12,7 @@
     <div class="container">
       <div class="content">
         <h1>Lesson Tracker</h1>
+        <h2>{{ time_to_display}} hours left!</h2>
         {% if error_message %}
         <h2>{{ error_message }}</h2>
         {% endif %}
@@ -34,12 +35,23 @@
           <th>ID</th>
           <th>Time</th>
           <th>Content</th>
+          <th>Delete Lesson</th>
         </tr>
         {% for lesson in lessons %}
         <tr>
           <td>{{ lesson.id }}</td>
           <td>{{ lesson.time }}</td>
           <td>{{ lesson.content }}</td>
+          <td class="delete-cell">
+            <form action="{{ url_for('delete_lesson') }}" method="post">
+              <input type="hidden" name="lesson_id" value="{{ lesson.id }}" />
+              <button type="submit" class="delete-btn" aria-label="Delete">
+                <!-- Trash can icon -->
+                <span>Delete</span>
+                <!-- Text "delete" below the icon -->
+              </button>
+            </form>
+          </td>
         </tr>
         {% endfor %}
       </table>
@@ -58,7 +70,7 @@
         for (let i = 0; i < totalSquares; i++) {
           const square = document.createElement("div");
           square.className = "hour-square";
-          if (i >= filledUntil && i < filledUntil + 0.5) {
+          if (totalHours > 0 && i >= filledUntil && i < filledUntil + 0.5) {
             square.classList.add("hour-square-half-filled");
           } else if (i >= filledUntil + 0.5) {
             square.classList.add("hour-square-filled");

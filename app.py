@@ -2,6 +2,10 @@
 
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired
+
 
 
 app = Flask(__name__)
@@ -48,13 +52,35 @@ def add_Lesson(time, content):
         print(f'Time: {time} topic: {content}')
 
 
+@app.route('/delete_lesson', methods=['POST', 'GET'])
+def delete_lesson():
+    lesson_id = request.form.get('lesson_id')
+    print(f'Lesson to delete ID: {lesson_id}')
+
+    if lesson_id and lesson_id.isdigit():
+        lesson_id = int(lesson_id)
+        lesson_to_delete = Lesson.query.get(lesson_id)
+        print(lesson_to_delete)
+        db.session.delete(lesson_to_delete)
+        db.session.commit()
+    else:
+        print('L')
+
+    return redirect(url_for('index'))
 
 
 @app.route('/')
 def index():
     lessons = Lesson.query.all()
     time_left = update_time()
-    return render_template('index.html', lessons=lessons, time_to_display=time_left)
+
+    time_to_display = int(time_left) if time_left %2 == 0 else time_left
+
+    return render_template('index.html', lessons=lessons, time_to_display=time_to_display)
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    return render_template('login.html')
 
 
 @app.route('/add_lesson', methods=['POST', 'GET'])
