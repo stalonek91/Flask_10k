@@ -254,8 +254,22 @@ tr {
   }
 }
 
-.navbar-img {
-  height: 100%; /* The image will fill the height of the navbar */
-  width: auto; /* Maintain the aspect ratio of the image */
-  /* If you want some padding around the image, adjust the height accordingly */
+.image-container {
+  width: 60px; /* Width of your image */
+  height: 50px; /* Height of your image */
+  background-image: url("pepe.png"); /* Original image */
+  background-size: cover; /* Cover the entire container */
+  background-position: center; /* Center the background image */
+  transition: background-image 0.5s; /* Smooth transition for the hover effect */
+}
+
+.image-container:hover {
+  background-image: url("pepe_2.png"); /* Image to show on hover */
+}
+
+/* Hide the <img> element, it's only there for accessibility reasons (e.g., screen readers) */
+.navbar-image {
+  width: auto;
+  height: 100%;
+  display: none;
 }

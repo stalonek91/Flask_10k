@@ -17,11 +17,13 @@
         <li><a href="/register">Register</a></li>
         <li><a href="/content">Tracker</a></li>
       </ul>
-      <img
-        src="{{ url_for('static', filename='pepe.png')}}"
-        alt="Pepe_navbar"
-        class="navbar-img"
-      />
+      <div class="image-container">
+        <img
+          src="{{ url_for('static', filename='pepe.png')}}"
+          alt="Pepe_navbar"
+          class="navbar-image"
+        />
+      </div>
     </nav>
   </body>
 </html>

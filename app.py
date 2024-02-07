@@ -1,15 +1,28 @@
 # Virtual env is called -> flask_10k/bin/activate /// deactivate after finished work
 
+# Use TODO and FIXME
+#TODO: generic -> add error handling to databases or basiaclly in forms, try except
+#TODO: add only 5 last updates on top of page not full list
+
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm
+from flask_bcrypt import Bcrypt
 
 
 
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
-db = SQLAlchemy(app)
 
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    username = db.Column(db.String(25), nullable=False)
+    email = db.Column(db.String(254),unique=True, nullable=False)
+    password = db.Column(db.String(30), nullable=False)
 
 
 
@@ -21,6 +34,7 @@ class Lesson(db.Model):
     def __repr__(self):
         return f'Lesson ID: {self.id} time spent:{self.time}, content: {self.content}'
 
+#TODO: add user id linked with timeleft 
 class TimeLeft(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time_left = db.Column(db.Float, nullable=False)
@@ -84,21 +98,43 @@ def content():
 
     return render_template('content.html', lessons=lessons, time_to_display=time_to_display)
 
+#FIXME: hash pass + flash messages
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     title = 'Login'
     form = LoginForm()
     form.submit_button.label.text = f'{title}'
-    if form.validate_on_submit():
-        print('dupa')
-    return render_template('login.html', title=f'{title}', form = form)
 
+    if form.validate_on_submit():
+        print(f'Submitted {title} form ')
+        return 'kwoka'
+    return render_template('login.html', title=title, form = form)
+
+
+#FIXME: flash messages
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     title = 'Register'
     form = LoginForm()
     form.submit_button.label.text = f'{title}'
-    return render_template('register.html', form = form, title = f'{title}')
+
+    if form.validate_on_submit():
+        print(f'Submitted {title} form ')
+
+        username = form.username.data
+        email = form.email.data
+        plain_password = form.password.data
+
+        hashed_password = bcrypt.generate_password_hash(plain_password).decode('utf-8')
+
+        new_user = User(username=username, email=email, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return f'Success! user: {username} has been created!'
+       
+        
+    return render_template('register.html', form = form, title = title)
 
 
 @app.route('/add_lesson', methods=['POST', 'GET'])
