@@ -2,82 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Lesson Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css')}}"
     />
   </head>
   <body>
-    <div class="container">
-      <div class="content">
-        <h1>Lesson Tracker</h1>
-        <h2>{{ time_to_display}} hours left!</h2>
-        {% if error_message %}
-        <h2>{{ error_message }}</h2>
-        {% endif %}
-        <form action="/add_lesson" method="post">
-          <input
-            type="number"
-            name="time"
-            step="0.5"
-            min="0"
-            max="24"
-            value="0"
-          />
-          <input type="text" name="content" />
-          <input type="submit" value="Add Lesson" />
-        </form>
-      </div>
-
-      <table>
-        <tr>
-          <th>ID</th>
-          <th>Time</th>
-          <th>Content</th>
-          <th>Delete Lesson</th>
-        </tr>
-        {% for lesson in lessons %}
-        <tr>
-          <td>{{ lesson.id }}</td>
-          <td>{{ lesson.time }}</td>
-          <td>{{ lesson.content }}</td>
-          <td class="delete-cell">
-            <form action="{{ url_for('delete_lesson') }}" method="post">
-              <input type="hidden" name="lesson_id" value="{{ lesson.id }}" />
-              <button type="submit" class="delete-btn" aria-label="Delete">
-                <!-- Trash can icon -->
-                <span>Delete</span>
-                <!-- Text "delete" below the icon -->
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      <div id="hour-container" data-total-hours="{{ time_to_display }}"></div>
-    </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const container = document.getElementById("hour-container");
-        const totalHours = parseFloat(
-          container.getAttribute("data-total-hours")
-        );
-        const totalSquares = 10000;
-        const filledUntil = totalSquares - totalHours;
-
-        for (let i = 0; i < totalSquares; i++) {
-          const square = document.createElement("div");
-          square.className = "hour-square";
-          if (totalHours > 0 && i >= filledUntil && i < filledUntil + 0.5) {
-            square.classList.add("hour-square-half-filled");
-          } else if (i >= filledUntil + 0.5) {
-            square.classList.add("hour-square-filled");
-          }
-          container.appendChild(square);
-        }
-      });
-    </script>
+    <nav class="navbar">
+      <!-- Navigation links -->
+      <ul class="nav-links">
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+        <li><a href="/content">Tracker</a></li>
+      </ul>
+      <img
+        src="{{ url_for('static', filename='pepe.png')}}"
+        alt="Pepe_navbar"
+        class="navbar-img"
+      />
+    </nav>
   </body>
 </html>

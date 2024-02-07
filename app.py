@@ -2,16 +2,16 @@
 
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired
+from forms import LoginForm
 
 
 
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
-
 db = SQLAlchemy(app)
+
+
+
 
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,28 +66,46 @@ def delete_lesson():
     else:
         print('L')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('content'))
 
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+
+@app.route('/content')
+def content():
     lessons = Lesson.query.all()
     time_left = update_time()
 
-    time_to_display = int(time_left) if time_left %2 == 0 else time_left
+    time_to_display = int(time_left) if time_left %1 == 0 else time_left
+    print(f'Time to display: {time_to_display}')
 
-    return render_template('index.html', lessons=lessons, time_to_display=time_to_display)
+    return render_template('content.html', lessons=lessons, time_to_display=time_to_display)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    return render_template('login.html')
+    title = 'Login'
+    form = LoginForm()
+    form.submit_button.label.text = f'{title}'
+    if form.validate_on_submit():
+        print('dupa')
+    return render_template('login.html', title=f'{title}', form = form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    title = 'Register'
+    form = LoginForm()
+    form.submit_button.label.text = f'{title}'
+    return render_template('register.html', form = form, title = f'{title}')
 
 
 @app.route('/add_lesson', methods=['POST', 'GET'])
 def add_lesson():
 
     if request.method == 'POST':
-        #TODO moze dotac wtf validatory?
+        
         try:
             time = float(request.form.get('time', 0))
             content = request.form.get('content')
@@ -96,7 +114,7 @@ def add_lesson():
         except ValueError:
             print(f'ERROR!!!!')
             
-    return redirect(url_for('index'))
+    return redirect(url_for('content'))
     
 
 if __name__ == '__main__':
