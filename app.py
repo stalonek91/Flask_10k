@@ -6,9 +6,9 @@
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from forms import LoginForm
+from forms import LoginForm, RegistrationForm
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager, login_required, UserMixin
 from urllib.parse import urlparse, urljoin
 
 
@@ -35,7 +35,8 @@ def is_safe_url(target):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class User(db.Model):
+class User(UserMixin, db.Model):
+
     id = db.Column(db.Integer, unique=True, primary_key=True)
     username = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(254),unique=True, nullable=False)
@@ -45,7 +46,7 @@ class User(db.Model):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
-        return bcrypt.check_password_hash(self.password_hash, password)
+        return bcrypt.check_password_hash(self.password, password)
 
 
 
@@ -110,9 +111,9 @@ def delete_lesson():
 def index():
     return render_template('index.html')
 
-
+#TODO: login functionality to finish!
 @app.route('/content')
-@login_required
+# @login_required
 def content():
     lessons = Lesson.query.order_by(Lesson.id.desc()).limit(5).all()
     time_left = update_time()
@@ -129,20 +130,28 @@ def content():
 def login():
     title = 'Login'
     form = LoginForm()
-    form.submit_button.label.text = f'{title}'
 
-    if request.method == 'POST':
-        
-        username = form.username.data
+    if form.validate_on_submit():
+
+        print(f'jestem w validate on submit')
+        email = form.email.data
         password = form.password.data
 
-        user = User.query.filter_by(username=username)
+        user = User.query.filter_by(email=email).first()
+        print(user)
 
+        #TODO: error handling try specific errrors for users
+        if user and user.check_password(password):
 
-        if form.validate_on_submit():
-            print(f'Submitted {title} form ')
-            return 'kwoka'
-    
+            
+            flash(f'Zalogowany user: {user.username}')
+            return redirect(session['next'])
+        
+        else:
+            print('swinia')
+            return f'User: {form.email.data} does not exist'
+        
+
     session['next'] = request.args.get('next')
     return render_template('login.html', title=title, form = form)
 
@@ -151,7 +160,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     title = 'Register'
-    form = LoginForm()
+    form = RegistrationForm()
     form.submit_button.label.text = f'{title}'
 
     if form.validate_on_submit():
