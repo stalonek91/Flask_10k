@@ -273,3 +273,19 @@ tr {
   height: 100%;
   display: none;
 }
+
+.flash-messages {
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8d7da; /* Light red background */
+  border: 1px solid #f5c6cb; /* Light red border */
+}
+.flash-warning {
+  color: #721c24; /* Dark red text color */
+  margin: 5px 0; /* Space between messages */
+  padding: 10px;
+  border-radius: 3px;
+  background-color: #f8d7da; /* Light red background */
+  border-left: 5px solid #d9534f; /* Darker red left border for emphasis */
+}

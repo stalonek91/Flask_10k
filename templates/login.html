@@ -14,7 +14,14 @@
 
     <form action="/login" method="post">
       {{ form.hidden_tag()}} {{ form.email.label}} {{ form.email()}} {{
-      form.password.label}} {{form.password()}} {{ form.submit_button()}}
+      form.password.label}} {{form.password()}} {{ form.submit_button()}} {%
+      with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+        <div class="flash-warning">{{message}}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
     </form>
   </body>
 </html>
