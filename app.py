@@ -3,12 +3,13 @@
 # Use TODO and FIXME
 #TODO: generic -> add error handling to databases or basiaclly in forms, try except
 #TODO: add only 5 last updates on top of page not full list
+#TODO: add logout functionality 
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm, RegistrationForm
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, login_required, UserMixin
+from flask_login import LoginManager, login_required, UserMixin, current_user, logout_user, login_user
 from urllib.parse import urlparse, urljoin
 
 
@@ -113,7 +114,7 @@ def index():
 
 #TODO: login functionality to finish!
 @app.route('/content')
-# @login_required
+@login_required
 def content():
     lessons = Lesson.query.order_by(Lesson.id.desc()).limit(5).all()
     time_left = update_time()
@@ -143,12 +144,19 @@ def login():
         #TODO: error handling try specific errrors for users
         if user and user.check_password(password):
 
+
+            login_user(user)
+            flash(f'Logged in user: {user.username}')
+
+            if 'next' in session and session['next']:
+                if is_safe_url(session['next']):
+                    print('URL is safe, redirecting to next')
+                return redirect(session['next'])
             
-            flash(f'Zalogowany user: {user.username}')
-            return redirect(session['next'])
+            return redirect(url_for('index'))
         
         else:
-            print('swinia')
+            
             return f'User: {form.email.data} does not exist'
         
 
