@@ -30,7 +30,24 @@
           <input type="text" name="content" />
           <input type="submit" value="Add Lesson" />
         </form>
-      </div>
+        {% if current_user.is_authenticated %}
+        <div class="flash-messages">
+          Current User: {{current_user.username}}
+          </div>
+          {% endif %}
+          <div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'error' %}
+                            <div class="flash-warning">{{ message }}</div>
+                        {% elif category == 'success' %}
+                            <div class="flash-success">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
 
       <table>
         <tr>
@@ -81,5 +98,19 @@
         }
       });
     </script>
+
+        <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+  const flashMessages = document.querySelectorAll('.flash-success');
+  flashMessages.forEach(flashMessage => {
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => flashMessage.remove(), 500); // Wait for the transition before removing the element
+    }, 1000); // Change this to how long you want the message to display
+  });
+});
+</script>
+
+
   </body>
 </html>

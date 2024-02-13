@@ -13,8 +13,13 @@
     <nav class="navbar">
       <!-- Navigation links -->
       <ul class="nav-links">
+        {% if current_user.is_authenticated %}
+        <li><a href="/logout">Logout</a></li>
+        {% else %}
         <li><a href="/login">Login</a></li>
         <li><a href="/register">Register</a></li>
+        {% endif %}
+
         <li><a href="/content">Tracker</a></li>
       </ul>
       <div class="image-container">

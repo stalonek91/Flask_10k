@@ -2,12 +2,13 @@
 
 # Use TODO and FIXME
 #TODO: generic -> add error handling to databases or basiaclly in forms, try except
-#TODO: add only 5 last updates on top of page not full list
-#TODO: add logout functionality 
+#TODO: add functionality which connects tracker with user ID
+#TODO: add dissapearing effect in CSS for flash messages
+#TODO: add 2 flash messages when deleting 2 entries fast
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm, RegistrationForm, AddLessonForm
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_required, UserMixin, current_user, logout_user, login_user
 from urllib.parse import urlparse, urljoin
@@ -98,13 +99,22 @@ def delete_lesson():
 
     if lesson_id and lesson_id.isdigit():
         lesson_id = int(lesson_id)
-        lesson_to_delete = Lesson.query.get(lesson_id)
-        print(lesson_to_delete)
-        db.session.delete(lesson_to_delete)
-        db.session.commit()
-    else:
-        print('L')
 
+        try:
+            lesson_to_delete = Lesson.query.get(lesson_id)
+            print(lesson_to_delete)
+            if lesson_to_delete:
+                db.session.delete(lesson_to_delete)
+                db.session.commit()
+                flash('Lesson successfully deleted!', 'success')
+            else:
+                flash('No lesson in DB to delete!', 'error')
+        except Exception as e:
+            print(e)
+            flash('An error occurred while deleting the lesson.', 'error')
+    else:
+        flash('Invalid lesson ID.', 'error')
+        
     return redirect(url_for('content'))
 
 
@@ -112,10 +122,11 @@ def delete_lesson():
 def index():
     return render_template('index.html')
 
-#TODO: login functionality to finish!
+
 @app.route('/content')
 @login_required
 def content():
+    
     lessons = Lesson.query.order_by(Lesson.id.desc()).limit(5).all()
     time_left = update_time()
 
@@ -126,7 +137,7 @@ def content():
 
 
 
-#FIXME: hash pass + flash messages
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     title = 'Login'
@@ -139,14 +150,15 @@ def login():
         password = form.password.data
 
         user = User.query.filter_by(email=email).first()
-        print(user)
+        
 
         #TODO: error handling try specific errrors for users
         if user and user.check_password(password):
 
 
             login_user(user)
-            flash(f'Logged in user: {user.username}')
+            print(f'Is user authenticated function {current_user.is_authenticated}')
+            flash_login = f'Welcome: {current_user.username}'
 
             if 'next' in session and session['next']:
                 if is_safe_url(session['next']):
@@ -187,6 +199,14 @@ def register():
         
     return render_template('register.html', form = form, title = title)
 
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+
+    logout_user()
+    print(f'User has been logged out')
+    return redirect(url_for('index'))
+    
+
 
 @app.route('/add_lesson', methods=['POST', 'GET'])
 def add_lesson():
@@ -197,6 +217,7 @@ def add_lesson():
             time = float(request.form.get('time', 0))
             content = request.form.get('content')
             new_lesson = add_Lesson(time=time, content=content)
+            flash('Lesson successfully addded!', 'success')
         
         except ValueError:
             print(f'ERROR!!!!')
