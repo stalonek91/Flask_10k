@@ -37,8 +37,8 @@ def is_safe_url(target):
 
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def load_user(session_token):
+    return User.query.filter_by(session_token=session_token).first()
 
 class User(UserMixin, db.Model):
 
@@ -53,6 +53,9 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
+    
+    def get_id(self):
+        return self.session_token
 
 
 
@@ -158,9 +161,9 @@ def login():
 
         #TODO: error handling try specific errrors for users
         if user and user.check_password(password):
-
-
-            login_user(user)
+            print(f'Is user authenticated function {current_user.is_authenticated}')
+            print('Login_user function triggered')
+            login_user(user, remember=True)
             print(f'Is user authenticated function {current_user.is_authenticated}')
             flash_login = f'Welcome: {current_user.username}'
 
