@@ -12,7 +12,8 @@ from forms import LoginForm, RegistrationForm, AddLessonForm
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_required, UserMixin, current_user, logout_user, login_user
 from urllib.parse import urlparse, urljoin
-
+from itsdangerous import URLSafeSerializer
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
@@ -20,6 +21,8 @@ app.config.from_pyfile('config.cfg')
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+serializer = URLSafeSerializer(app.config['SECRET_KEY'])
+migrate = Migrate(app, db)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -43,6 +46,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(254),unique=True, nullable=False)
     password = db.Column(db.String(30), nullable=False)
+    session_token = db.Column(db.String(100), unique=True, nullable=True)
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -186,10 +190,9 @@ def register():
     if form.validate_on_submit():
         print(f'Submitted {title} form ')
 
-        new_user = User(username=form.username.data, email=form.email.data)
+        new_user = User(username=form.username.data, email=form.email.data, session_token=serializer.dumps([form.username.data, form.password.data]))
         new_user.set_password(form.password.data)
-
-
+        
         db.session.add(new_user)
         db.session.commit()
 
