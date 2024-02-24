@@ -5,6 +5,7 @@
 #TODO: add functionality which connects tracker with user ID
 #TODO: add dissapearing effect in CSS for flash messages
 #TODO: add 2 flash messages when deleting 2 entries fast
+#TODO: add search of lessons by keywords
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -40,6 +41,7 @@ def is_safe_url(target):
 def load_user(session_token):
     return User.query.filter_by(session_token=session_token).first()
 
+#TODO: rember that you overwritten the get_id function with session token!!!!
 class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
