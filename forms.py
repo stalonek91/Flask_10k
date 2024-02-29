@@ -1,6 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField
-from wtforms.validators import DataRequired, InputRequired, Length, Email, EqualTo, NumberRange
+from wtforms.validators import DataRequired, InputRequired, Length, Email, EqualTo, NumberRange, ValidationError
+
+
+def not_empty_string(form, field):
+    if field.data and not field.data.strip():
+        raise ValidationError('You cannot have white spaces!')
+    
 
 class RegistrationForm(FlaskForm):
     username = StringField('username', validators=[DataRequired(), Length(min=3, max=15)])
@@ -19,5 +25,5 @@ class LoginForm(FlaskForm):
 
 class AddLessonForm(FlaskForm):
     time_field = FloatField('time_field', validators=[InputRequired(), NumberRange(min=0, max=100)], default=0)
-    content = StringField('content_field', validators=[DataRequired()])
+    content = StringField('content_field', validators=[DataRequired(), not_empty_string])
     submit_button = SubmitField('Add lesson')

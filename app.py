@@ -13,8 +13,9 @@ from forms import LoginForm, RegistrationForm, AddLessonForm
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_required, UserMixin, current_user, logout_user, login_user
 from urllib.parse import urlparse, urljoin
-from itsdangerous import URLSafeSerializer
+from itsdangerous import URLSafeTimedSerializer
 from flask_migrate import Migrate
+from sqlalchemy.exc import SQLAlchemyError
 
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ app.config.from_pyfile('config.cfg')
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-serializer = URLSafeSerializer(app.config['SECRET_KEY'])
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 migrate = Migrate(app, db)
 
 login_manager = LoginManager()
@@ -31,14 +32,16 @@ login_manager.login_view = 'login'
 login_manager.login_message = 'Log in first to acess the tracker!'
 
 
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
-
+#TODO: add function to regenerate serializer
 @login_manager.user_loader
 def load_user(session_token):
+    # serializer.loads(session_token, max_age=3600)
     return User.query.filter_by(session_token=session_token).first()
 
 #TODO: rember that you overwritten the get_id function with session token!!!!
@@ -95,10 +98,14 @@ def create_tables():
 
 def add_Lesson(time, content):
     with app.app_context():
-        new_Lesson = Lesson(time=time, content=content)
-        db.session.add(new_Lesson)
-        db.session.commit()
-        print(f'Time: {time} topic: {content}')
+        try:
+            new_Lesson = Lesson(time=time, content=content)
+            db.session.add(new_Lesson)
+            db.session.commit()
+            print(f'Time: {time} topic: {content}')
+
+        except SQLAlchemyError as e:
+            return f'There has been some problem -> {e}'
 
 
 @app.route('/delete_lesson', methods=['POST', 'GET'])
@@ -215,7 +222,7 @@ def logout():
     return redirect(url_for('index'))
     
 
-
+#FIXME: fix the validators
 @app.route('/add_lesson', methods=['POST', 'GET'])
 def add_lesson():
 
