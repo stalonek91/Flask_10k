@@ -18,6 +18,7 @@ from flask_migrate import Migrate
 from sqlalchemy.exc import SQLAlchemyError
 
 
+
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 
@@ -38,13 +39,13 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
-#TODO: add function to regenerate serializer
+
 @login_manager.user_loader
 def load_user(session_token):
     # serializer.loads(session_token, max_age=3600)
     return User.query.filter_by(session_token=session_token).first()
 
-#TODO: rember that you overwritten the get_id function with session token!!!!
+
 class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -124,6 +125,7 @@ def delete_lesson():
                 db.session.commit()
                 flash('Lesson successfully deleted!', 'success')
             else:
+                
                 flash('No lesson in DB to delete!', 'error')
         except Exception as e:
             print(e)
@@ -238,6 +240,7 @@ def add_lesson():
             print(f'ERROR!!!!')
             
     return redirect(url_for('content'))
+
     
 
 if __name__ == '__main__':

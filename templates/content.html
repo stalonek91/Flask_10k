@@ -101,7 +101,7 @@
 
         <script>
 document.addEventListener('DOMContentLoaded', (event) => {
-  const flashMessages = document.querySelectorAll('.flash-success');
+  const flashMessages = document.querySelectorAll('.flash-success, .flash-warning');
   flashMessages.forEach(flashMessage => {
     setTimeout(() => {
       flashMessage.style.opacity = '0';
