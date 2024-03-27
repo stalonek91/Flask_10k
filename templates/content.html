@@ -18,17 +18,11 @@
         {% if error_message %}
         <h2>{{ error_message }}</h2>
         {% endif %}
-        <form action="/add_lesson" method="post">
-          <input
-            type="number"
-            name="time"
-            step="0.5"
-            min="0"
-            max="24"
-            value="0"
-          />
-          <input type="text" name="content" />
-          <input type="submit" value="Add Lesson" />
+        <form action="{{ url_for('content') }}" method="post">
+          {{ form.hidden_tag()}}
+          {{ form.time_field()}}
+          {{ form.content()}}
+          {{ form.submit_button() }}
         </form>
         {% if current_user.is_authenticated %}
         <div class="flash-messages">
@@ -110,7 +104,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
   });
 });
 </script>
-
-
   </body>
 </html>

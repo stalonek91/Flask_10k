@@ -6,6 +6,7 @@
 # TODO: add dissapearring effect in CSS for flash messages
 # TODO: add 2 flash messages when deleting 2 entries fast
 # TODO: add search of lessons by keywords
+# FIXME: nie dziala pepe!!!!
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 from forms import LoginForm, RegistrationForm, AddLessonForm
@@ -67,17 +68,29 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/content')
+@app.route('/content', methods = ['GET', 'POST'])
 @login_required
 def content():
-    
+
+    form = AddLessonForm()
+
+    if form.validate_on_submit():
+        print('I am in content POST')
+        try:
+            new_lesson = add_lesson_funct(time=form.time_field.data, content=form.content.data)
+            flash('Lesson successfully added!', 'success')
+
+        except ValueError:
+            flash('Fail to add lesson', 'error')
+            print(f'ERROR!!!!')
+
     lessons = Lesson.query.order_by(Lesson.id.desc()).limit(5).all()
     time_left = update_time()
 
     time_to_display = int(time_left) if time_left % 1 == 0 else time_left
     print(f'Time to display: {time_to_display}')
 
-    return render_template('content.html', lessons=lessons, time_to_display=time_to_display)
+    return render_template('content.html', lessons=lessons, time_to_display=time_to_display, form=form)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -144,24 +157,6 @@ def logout():
     logout_user()
     print(f'User has been logged out')
     return redirect(url_for('index'))
-    
-
-# FIXME: fix the validators
-@app.route('/add_lesson', methods=['POST', 'GET'])
-def add_lesson():
-
-    if request.method == 'POST':
-        
-        try:
-            time = float(request.form.get('time', 0))
-            content = request.form.get('content')
-            new_lesson = add_lesson_funct(time=time, content=content)
-            flash('Lesson successfully added!', 'success')
-        
-        except ValueError:
-            print(f'ERROR!!!!')
-
-    return redirect(url_for('content'))
 
 
 if __name__ == '__main__':

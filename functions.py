@@ -32,6 +32,7 @@ def create_tables():
 
 
 def add_lesson_funct(time, content):
+    print('triggering add_lesson_funct')
     with current_app.app_context():
         try:
             new_lesson = Lesson(time=time, content=content)
