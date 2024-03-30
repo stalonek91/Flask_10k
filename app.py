@@ -12,7 +12,7 @@ from flask import Flask
 
 from flask_login import LoginManager
 
-from itsdangerous import URLSafeTimedSerializer
+
 from flask_migrate import Migrate
 from extensions import db, bcrypt
 from functions import create_tables,  init_login_manager
@@ -26,8 +26,8 @@ app.config.from_pyfile('config.cfg')
 db.init_app(app)
 bcrypt.init_app(app)
 
-serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 migrate = Migrate(app, db)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -45,4 +45,3 @@ if __name__ == '__main__':
         create_tables()
     app.run(debug=True)
 
-    

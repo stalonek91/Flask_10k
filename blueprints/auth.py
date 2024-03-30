@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, current_app
 from forms import LoginForm, RegistrationForm
 from flask_login import login_user, logout_user, current_user
 from models import User
 from extensions import db
+from itsdangerous import URLSafeTimedSerializer
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -33,6 +34,7 @@ def login():
                     print(f'URL is safe, redirecting to next {session["next"]}')
                 return redirect(session['next'])
 
+            print(f'Redirecting to content content')
             return redirect(url_for('content.content'))
 
         else:
@@ -53,12 +55,16 @@ def register():
     if form.validate_on_submit():
         print(f'Submitted {title} form ')
 
+        serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+
         new_user = User(username=form.username.data, email=form.email.data,
                         session_token=serializer.dumps([form.username.data, form.password.data]))
         new_user.set_password(form.password.data)
 
+        print(f'proba commita')
         db.session.add(new_user)
         db.session.commit()
+        print(f'Po commicie, proba przejscia do auth.login')
 
         flash(f'You have been registered: {new_user.username}')
         return redirect(url_for('auth.login'))

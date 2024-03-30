@@ -12,7 +12,7 @@
   <body>
     {% include 'index.html' %}
 
-    <form action="/register" method="post">
+    <form action="{{ url_for('auth.register') }}" method="post">
       {{ form.hidden_tag()}} {{ form.username.label}} {{form.username()}} {{
       form.email.label}} {{ form.email()}} {{ form.password.label}}
       {{form.password()}} {{form.confirm_password.label}} {{

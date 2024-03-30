@@ -11,6 +11,7 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
+
 def update_time():
     with current_app.app_context():
 

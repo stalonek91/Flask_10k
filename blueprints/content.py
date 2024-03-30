@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from forms import AddLessonForm
 from models import Lesson
 from functions import update_time, add_lesson_funct
@@ -13,7 +13,7 @@ content_bp = Blueprint('content', __name__, url_prefix='/content')
 def content():
 
     form = AddLessonForm()
-
+    print(f' {current_user.id}')
     if form.validate_on_submit():
         print('I am in content POST')
         try:

@@ -1,2 +1,9 @@
 # Virtual environment
 flask_10k/
+idea/
+pycache__/
+/blueprints/__pycache__/
+backup_flask_10k.db
+/migrations/
+/.idea/
+/__pycache__/

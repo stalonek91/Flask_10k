@@ -29,7 +29,26 @@ class Lesson(db.Model):
         return f'Lesson ID: {self.id} time spent:{self.time}, content: {self.content}'
 
 
-# TODO: add user id linked with timeleft
+class NewLesson(db.Model):
+    __tablename__ = 'new_lesson'
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.Float, nullable=False)
+    content = db.Column(db.String(50), nullable=False)
+    table_id = db.Column(db.Integer, db.ForeignKey('time_left.id'), nullable=False)
+
+    time_left = db.relationship('TimeLeft', backref=db.backref('lesson_entries', lazy=True))
+
+    def __repr__(self):
+        return f'Lesson ID: {self.id} time spent:{self.time}, content: {self.content}'
+
+
 class TimeLeft(db.Model):
+    __tablename__ = 'time_left'
     id = db.Column(db.Integer, primary_key=True)
     time_left = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    user = db.relationship('User', backref=db.backref('time_left_entries', lazy=True))
+
+
+
