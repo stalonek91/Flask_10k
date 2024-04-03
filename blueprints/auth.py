@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, current_user
 from models import User
 from extensions import db
 from itsdangerous import URLSafeTimedSerializer
+from functions import is_safe_url, create_new_table
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -61,10 +62,11 @@ def register():
                         session_token=serializer.dumps([form.username.data, form.password.data]))
         new_user.set_password(form.password.data)
 
-        print(f'proba commita')
         db.session.add(new_user)
+        db.session.flush()
+
+        create_new_table(user_id=new_user.id)
         db.session.commit()
-        print(f'Po commicie, proba przejscia do auth.login')
 
         flash(f'You have been registered: {new_user.username}')
         return redirect(url_for('auth.login'))

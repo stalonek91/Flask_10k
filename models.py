@@ -21,16 +21,7 @@ class User(UserMixin, db.Model):
 
 
 class Lesson(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.Float, nullable=False)
-    content = db.Column(db.String(50), nullable=False)
-
-    def __repr__(self):
-        return f'Lesson ID: {self.id} time spent:{self.time}, content: {self.content}'
-
-
-class NewLesson(db.Model):
-    __tablename__ = 'new_lesson'
+    __tablename__ = 'lesson'
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.Float, nullable=False)
     content = db.Column(db.String(50), nullable=False)

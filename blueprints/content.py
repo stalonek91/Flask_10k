@@ -14,17 +14,19 @@ def content():
 
     form = AddLessonForm()
     print(f' {current_user.id}')
+    current_user_id = current_user.id
     if form.validate_on_submit():
         print('I am in content POST')
         try:
-            new_lesson = add_lesson_funct(time=form.time_field.data, content=form.content.data)
+            new_lesson = add_lesson_funct(time=form.time_field.data, content=form.content.data, table_id=current_user_id)
             flash('Lesson successfully added!', 'success')
 
-        except ValueError:
+        except ValueError as e:
             flash('Fail to add lesson', 'error')
-            print(f'ERROR!!!!')
+            print(f'Error is: {e}')
 
-    lessons = Lesson.query.order_by(Lesson.id.desc()).limit(5).all()
+    lessons = Lesson.query.filter(Lesson.table_id == current_user_id).order_by(Lesson.id.desc()).limit(5).all()
+    print(f'{lessons}')
     time_left = update_time()
 
     time_to_display = int(time_left) if time_left % 1 == 0 else time_left
